@@ -44,15 +44,18 @@ def test_sample_manager_reads(live_server, client, django_user_model, settings):
     # session, permission, ORM and serializer code over HTTP, with a fresh socket.
     client.force_login(operator)
     key = settings.SESSION_COOKIE_NAME
-    headers = {'Cookie': f'{key}={client.cookies[key].value}'}
+    headers = {'Host': address.netloc, 'Cookie': f'{key}={client.cookies[key].value}'}
     durations = {'dashboard': [], 'availability': []}
+    print('Ready: 60 rooms, 600 guests and 1,200 stays. Measuring IPv4 loopback HTTP.', flush=True)
     for i in range(33):  # discard three warm-up pairs; rotate between both availability pages
         page = i % 2 + 1
         for label, route in (
             ('dashboard', 'dashboard/'),
             ('availability', f'rooms/availability/?arrival={today}&departure={today+timedelta(days=1)}&page={page}'),
         ):
-            conn = HTTPConnection(address.hostname, address.port, timeout=30)
+            # Django's live fixture listens on an IPv4 socket. Avoid timing an
+            # IPv6 connection refusal before every sample on dual-stack hosts.
+            conn = HTTPConnection('127.0.0.1', address.port, timeout=30)
             try:
                 start = perf_counter()
                 conn.request('GET', '/api/v1/'+route, headers=headers)

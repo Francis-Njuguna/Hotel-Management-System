@@ -1,0 +1,28 @@
+name: Rehearse packaged recovery
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/rehearse.yml'
+      - 'compose.yaml'
+      - 'deploy/**'
+      - 'backend/apps/**'
+      - 'backend/config/**'
+      - 'backend/requirements.txt'
+      - 'frontend/src/**'
+      - 'frontend/package*.json'
+permissions:
+  contents: read
+
+jobs:
+  restored-stack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify cold start and restore in a second project
+        run: |
+          python3 -u deploy/rehearse.py --run | tee "$RUNNER_TEMP/hotel-recovery.log"
+          grep '^PASS:' "$RUNNER_TEMP/hotel-recovery.log" >> "$GITHUB_STEP_SUMMARY"
+        shell: bash
