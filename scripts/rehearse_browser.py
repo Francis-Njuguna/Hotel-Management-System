@@ -28,16 +28,19 @@ ROOT=Path(__file__).resolve().parents[1]
 local_http=build_opener(ProxyHandler({}))
 
 
-def wait_ready(proc, url):
+def wait_ready(proc, url, *, anonymous=False):
     deadline=monotonic()+60
     while monotonic()<deadline:
         if proc.poll() is not None: raise RuntimeError('Acceptance server stopped on startup.')
         try:
-            with local_http.open(url, timeout=2) as result:
-                if result.status==200: return
+            with local_http.open(url, timeout=5) as result:
+                if result.status==200:
+                    if anonymous and json.load(result)!={'user':None}:
+                        raise RuntimeError('Anonymous bootstrap failed.')
+                    return
         except (OSError,URLError): pass
         sleep(.25)
-    raise RuntimeError('Acceptance server did not become ready.')
+    raise RuntimeError(f'Acceptance endpoint did not become ready: {url}')
 
 
 def stop(proc):
@@ -95,8 +98,8 @@ Room.objects.get(number='D101').image.save('test-catalog.jpg',ContentFile(buf.ge
                 wait_ready(backend,api+'/api/v1/auth/me/')
                 vite=start([node,'node_modules/vite/bin/vite.js','--host','127.0.0.1','--port','5189','--strictPort'],front,{**tools,'HMS_API_TARGET':api})
                 wait_ready(vite,ui+'/')
-                with local_http.open(ui+'/api/v1/auth/me/',timeout=5) as response:
-                    if json.load(response)!={'user':None}: raise RuntimeError('Anonymous bootstrap failed.')
+                # Serving the Vite shell does not guarantee the API proxy is ready.
+                wait_ready(vite,ui+'/api/v1/auth/me/',anonymous=True)
                 runner={**tools, **{k:env[k] for k in ('HMS_DEMO_USER','HMS_DEMO_PASSWORD','E2E_BASE_URL','HMS_E2E_DISPOSABLE')},
                         'PLAYWRIGHT_CHANNEL':os.getenv('PLAYWRIGHT_CHANNEL','')}
                 selected=[]
