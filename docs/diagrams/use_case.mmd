@@ -1,0 +1,15 @@
+flowchart LR
+    %% Representative use cases, not an authorization graph. The SRS role table defines full grants.
+    Common["Any active staff role"] --> Session(["FR-10 · sign in, reset password, sign out"])
+    Common --> Overview(["FR-01 · read own scoped overview and notifications"])
+    Admin["Super Administrator"] --> Accounts(["FR-09 · manage accounts, departments and roles"])
+    Manager["Hotel Manager"] --> Catalog(["FR-04 · maintain rooms and rates"])
+    Manager --> Dispatch(["FR-05 · dispatch work and inspect turnover"])
+    Desk["Receptionist"] --> Guest(["FR-02 · find or register guest, view permitted history"])
+    Desk --> Book(["FR-03/04 · find rooms, book, admit and check out"])
+    Desk --> Parking(["FR-08 · register vehicle, allocate or release space"])
+    Desk --> Lookup(["FR-07 · look up folio, without posting"])
+    Cleaner["Housekeeping Staff"] --> Clean(["FR-05 · progress own assigned cleaning task"])
+    Repair["Maintenance Staff"] --> Fix(["FR-05 · work own assigned repair"])
+    Kitchen["Restaurant Staff"] --> Order(["FR-06 · maintain menu, serve dine-in or room order"])
+    Finance["Accountant"] --> Reconcile(["FR-07 · review charges, record tender, reconcile receipts"])

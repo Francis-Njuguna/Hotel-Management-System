@@ -1,0 +1,16 @@
+**
+!frontend/package.json
+!frontend/package-lock.json
+!frontend/index.html
+!frontend/tsconfig*.json
+!frontend/vite.config.ts
+!frontend/public/**
+!frontend/src/**
+!deploy/nginx.conf
+frontend/public/media
+frontend/public/protected-media
+**/.env*
+**/.git
+**/node_modules
+**/*.pem
+**/*.key

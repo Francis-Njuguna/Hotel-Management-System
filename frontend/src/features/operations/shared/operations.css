@@ -1,0 +1,56 @@
+/* Layout extensions for task queues and composers; the shell supplies typography, fields and buttons. */
+.ops { min-width: 0; }
+.ops .ops-switch, .ops .ops-inline, .ops .ops-row-head, .ops .ops-section-head,
+.ops .ops-pager, .ops .ops-actions, .ops .ops-filters { display: flex; flex-wrap: wrap; align-items: center; gap: .65rem; }
+.ops .ops-row-head, .ops .ops-section-head { justify-content: space-between; align-items: flex-start; }
+.ops .ops-switch { margin-block: .25rem .8rem; }
+.ops .ops-switch [aria-pressed="true"] { border-color: currentColor; box-shadow: inset 0 -3px currentColor; font-weight: 700; }
+.ops .ops-stack, .ops .ops-form, .ops .ops-records, .ops .ops-record { display: grid; gap: .9rem; min-width: 0; }
+.ops .ops-section-head h2, .ops .ops-row-head h3, .ops .ops-form h3, .ops .ops-record p, .ops .ops-section-head p,
+.ops .ops-confirm p, .ops .ops-form-heading p, .ops .ops-form-heading h3 { margin: 0; }
+.ops .ops-section-head p, .ops .ops-form-heading p { margin-block-start: .3rem; }
+.ops .ops-row-head h3 { font-size: 1.05rem; }
+.ops .ops-form-heading h3:focus { outline-offset: .25rem; }
+.ops .ops-form-heading h3, .ops .ops-feedback { scroll-margin-block-start: 5rem; }
+.ops .ops-record, .ops .ops-fieldset, .ops .ops-confirm-body { border: 1px solid #bac7cc; border-radius: .7rem; padding: 1rem; min-inline-size: 0; }
+.ops .ops-record { overflow-wrap: anywhere; }
+.ops .ops-record dl { display: flex; flex-wrap: wrap; gap: .65rem 1.8rem; margin: 0; }
+.ops .ops-record dl > div { min-width: 7rem; }
+.ops .ops-record dt { font-size: .8rem; font-weight: 600; }
+.ops .ops-record dd { margin: .2rem 0 0; }
+.ops .ops-badge { flex: 0 0 auto; }
+.ops .ops-badge:is([data-state="inspected"], [data-state="served"], [data-state="resolved"], [data-state="available"]) { background: #e7f4ed; color: #21553e; }
+.ops .ops-badge:is([data-state="pending"], [data-state="open"], [data-state="ready"]) { background: #fff1cf; color: #674605; }
+.ops .ops-badge:is([data-state="cancelled"], [data-state="released"], [data-state="unavailable"]) { background: #eef1f2; color: #39484e; }
+.ops .ops-fieldset { margin: 0; }
+.ops .ops-fieldset legend { padding-inline: .35rem; font-weight: 650; }
+.ops .ops-check { display: flex; gap: .55rem; align-items: baseline; font-weight: 600; }
+.ops .ops-check input { width: auto; min-width: 1rem; min-height: 1rem; accent-color: currentColor; }
+.ops .ops-form .form-grid { align-items: start; }
+.ops .ops-form :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea), .ops .ops-search input { max-width: 100%; min-width: 0; }
+.ops .ops-fieldset small, .ops .ops-picker-info, .ops .ops-find { font-size: .88rem; }
+.ops .ops-find summary { cursor: pointer; width: fit-content; padding-block: .3rem; text-decoration: underline; text-underline-offset: .18em; }
+.ops .ops-find .field { margin-block-start: .4rem; }
+.ops .ops-find > button { margin-block-start: .55rem; }
+.ops .ops-picker { min-width: 0; }
+.ops .ops-picker-info:empty { display: none; }
+.ops .ops-filters { align-items: end; }
+.ops .ops-filters > .field { min-width: min(12rem,100%); }
+.ops .ops-search input { flex: 1 1 8rem; width: 8rem; }
+.ops .ops-pager { margin-block-start: .25rem; justify-content: flex-start; }
+.ops .ops-confirm-body { margin-block-start: .55rem; }
+.ops .ops-confirm-body p { margin-block-end: .55rem; }
+.ops .ops-note { white-space: pre-line; }
+.ops .ops-menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%,19rem),1fr)); gap: .85rem; }
+.ops .ops-thumb { width: 5rem; height: 5rem; object-fit: cover; border-radius: .6rem; }
+.ops .ops-line-list { margin: 0; padding-inline-start: 1.4rem; }
+.ops .ops-line-list li + li { margin-block-start: .3rem; }
+.ops .ops-title { display: flex; align-items: center; gap: .8rem; min-width: 0; }
+.ops .ops-error-block { display: grid; gap: .5rem; }
+@media (max-width: 42rem) {
+  .ops .ops-filters, .ops .ops-filters > .field, .ops .ops-form .form-grid { width: 100%; }
+  .ops .ops-form .form-grid { display: grid; grid-template-columns: minmax(0,1fr); }
+  .ops .ops-section-head { flex-direction: column; }
+  .ops .ops-record, .ops .ops-fieldset { padding: .8rem; }
+  .ops .ops-search { min-width: 0; }
+}

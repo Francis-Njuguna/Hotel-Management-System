@@ -1,0 +1,10 @@
+/* The shell, other records and controls must not appear on an individual receipt. */
+.office-print-copy { display: none; }
+@media print {
+  body.office-receipt-open { display: block !important; background: white !important; color: black !important; }
+  body.office-receipt-open > :not(.office-print-copy) { display: none !important; }
+  body.office-receipt-open > .office-print-copy { display: block !important; padding: 8mm; }
+  .office-print-copy article { border: 0; box-shadow: none; break-inside: avoid; }
+  .office-print-copy dt { font-weight: 600; }
+  .office-print-copy dd { margin: 0 0 3mm; overflow-wrap: anywhere; }
+}

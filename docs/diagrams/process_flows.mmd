@@ -1,0 +1,26 @@
+flowchart TB
+    subgraph Booking["FR-02/03/04 · booking one or more named rooms"]
+        Search["Find guest and search requested nights"] --> Offer{"Confirm now?"}
+        Offer -->|No| Draft["Pending reservation · no inventory hold"]
+        Draft -->|Later confirmation| Lock["Lock rooms in ID order; recheck whole interval"]
+        Offer -->|Yes| Lock
+        Lock --> Free{"All selected rooms active and free of blocking claims?"}
+        Free -->|No| Reject["Reject the whole command; no partial allocation"]
+        Free -->|Yes| Confirm["Confirmed · all rooms and agreed rates committed"]
+        Confirm -->|Cancel before admission| Cancel["Release claims and retain booking history"]
+    end
+    subgraph Stay["FR-03/05/06/07 · one stay and one folio"]
+        Confirm --> Admit{"Eligible arrival and every room vacant, inspected and unblocked?"}
+        Admit -->|No| Refuse["Refuse admission; no folio or partial check-in"]
+        Admit -->|Yes| Active["Check in all rooms; open one folio and post agreed room nights"]
+        Active -->|If room service requested| Order["Choose booked room for multi-room stay; order at snapshot prices"]
+        Order -->|When served| Serve["Commit served state and charge together, once"]
+        Active -->|If funds received| Tender["Finance records verified tender; one receipt per reference"]
+        Active -->|Request departure| Review["Lock reservation, folio and related orders"]
+        Serve -->|Later checkout request| Review
+        Tender -->|Later checkout request| Review
+        Review --> CanClose{"Active stay, no open room order and zero balance?"}
+        CanClose -->|No| RefuseClose["Keep stay, folio and room state; resolve cause before retry"]
+        CanClose -->|Yes| Departure["Atomic checkout: close folio, stamp departure, mark each room dirty and create its pending task"]
+    end
+    Departure --> Queue["Turnover queue reflects the commit; the next guest still needs admission checks"]

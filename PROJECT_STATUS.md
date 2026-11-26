@@ -1,8 +1,64 @@
 # Project status — Hotel Management System
 
-**Checkpoint:** 2026-11-26 · **Phase:** 1, discovery · **Gate:** [report submitted for owner review](docs/discovery_report.md); reference-image comparison blocked. The approved technology stack is a constraint; none of the proposed hotel policies or detailed designs is approved yet. Implementation is locked.
+**Checkpoint:** 2026-11-26 · **Current direction:** owner requested the working system after reviewing discovery. Build the anonymized Hotel A application using the specified stack. Academic submissions and still-unknown field findings are deferred. The owner reports no existing system; this is not evidence about particular manual procedures. The original discovery checkpoint below is historical.
 
-## Assignment board
+## Software delivery and verification — 2026-11-26
+
+All nine staff areas are implemented. Start the [local demo](README.md#run-the-local-demo); the optional starter catalog has six rooms, one synthetic guest, menu items and parking spaces. Setup creates no booking or tender. The following observations are from the integrated application with synthetic fixtures.
+
+| Gate | Evidence observed by the principal |
+|---|---|
+| PostgreSQL schema | Migrated the separate PostgreSQL **18.4** cluster on loopback. `manage.py check`: 0 issues. `makemigrations --check --dry-run`: no changes. SQL inspection showed `btree_gist` 1.8, a GiST exclusion on `room_id` and half-open `daterange(start,end,'[)') WHERE blocking`, and independent unique indexes on active parking space and vehicle. |
+| API contract | `manage.py spectacular --validate --fail-on-warn` passed after adding explicit enum names; `pip check` found no broken requirements. |
+| Targeted business regressions | **36 passed**, plus **21 subtests**, on PostgreSQL. Includes booking contention in both commit orders and forced rollback; concurrent settlement and parking; two-room check-in → room-service posting → final settlement → checkout → inspection; verified recovery and the targeted reception folio. [Traceability matrix](backend/tests/README.md). |
+| Frontend | `npm run build` passed (TypeScript + Vite); **74/74 component and service tests** passed across 15 files, including seven delayed-session regressions. The browser harness type-checked separately. Earlier runs were 67/67 before the session fix and 72/74 with two one-second component-query timeouts. An increased async-query budget preserved the assertions in the passing retest. |
+| Demo isolation | Principal reran **12/12** launcher guards in an isolated Python process. A conflicting inherited DB, proxy or mail target did not launch child processes; the local configuration was accepted. Production settings separately rejected a disabled STARTTLS flag in an import-only check. |
+| Real browser | Five default Edge/Playwright journeys passed on the running native demo. All **six** then passed on a fresh PostgreSQL database: the extra journey booked one room, checked in, confirmed HTTP 409 for unpaid checkout, recorded one synthetic received tender, checked out and verified the closed folio, dirty room and pending turnover. Mobile navigation/logout, session protection, live dashboard counts and failed-search recovery use the real application. |
+| Matched restore | With both scratch web processes stopped, `scripts/rehearse_browser.py` restored a `pg_dump` archive into a third, new database and copied the matching media. **Nine database checks** matched, along with the name and SHA-256 of **one file**. Billed **KES 3,600.00** and received **KES 3,600.00** survived restoration. Scratch databases and media were removed. The main demo still showed **KES 0.00** billed and collected. |
+
+**Regression history:** narrowed reception’s invoice register; required signed-in mailbox verification; bounded permission grants by canonical role; applied per-account session versioning; removed upload metadata carried through image conversion; corrected rollback boundaries and two-actor race fixtures. The initial backend integration recorded 107 passes, 10 failures and 19 errors, including a database outage. A subsequent full run had 127 passes, three failures and 71 passing subtests; two media tests finalized already-consumed responses twice. Their assertions now check Django's own stream closure. Another cluster interruption affected pre-handover runs; a fresh whole-suite run on the recovered PostgreSQL instance is the acceptance criterion. Failed/interrupted runs are not passes.
+
+**Operational boundary:** these are local software results. Live TLS and SMTP, operator training and policy acceptance, off-host backup/retention objectives and the original UI screenshot have not been validated by Hotel A. The university report still needs authorized field evidence.
+
+## Build assignments and integration gates
+
+The principal owns contracts, project settings, integration, migrations, dashboard, verification and publication. Review the physical model before model creation. All work targets the single-property staff application; policy defaults are engineering choices, not claims of hotel approval.
+
+**B1 design review accepted:** lead checked the 27-relation dictionary and ERD, including the room-claim XOR, exclusion predicate, two partial parking keys and financial locks. Amendment: add `InvoiceItem.created_at` for the posting date rather than coupling the financial report to audit rows. B3–B5 model writers released. B4 is split among three separate children, one app each (housekeeping, restaurant, parking). No two agents share a writable app.
+
+| Task / owner | Exclusive writable paths | Input → acceptance / verification |
+|---|---|---|
+| B1 Data engineer | `docs/system-design/database_design.md`, `docs/diagrams/erd.mmd` | Frozen contract → typed dictionary, normalized relations, constraints, indexes and contention review before models |
+| B2 DevOps | `deploy/`, `compose.yaml`, `docs/technical/deployment_guide.md` | Environment contract → reproducible, same-origin launch and recovery instructions; configuration checked by lead |
+| B3 Backend (lodging) | `backend/apps/lodging/` | Reviewed DB/API contract → guest and room catalog, multi-room booking/admission/checkout, history, conflict/rollback tests |
+| B4 Backend (operations) | `backend/apps/housekeeping/`, `backend/apps/restaurant/`, `backend/apps/parking/` | Same contract → authorized task, work order, restaurant and parking lifecycles; tests for rejected transitions |
+| B5 Backend (finance) | `backend/apps/billing/` | Same contract → decimal invoices, additional charges, real tender records and idempotent receipts; reconciliation tests |
+| B6 Frontend (shell) | `frontend/src/app/`, `frontend/src/styles/`, `frontend/src/features/dashboard/`, `frontend/src/features/auth/`, `frontend/src/main.tsx` | Reviewed endpoints → responsive navigation, login/recovery, live overview, accessible UI; type/build/browser checks |
+| B7 Frontend (front desk) | `frontend/src/features/frontdesk/` | Contracts → guests, rooms, availability, reservation and stay workflows; build/browser verification |
+| B8 Frontend (operations) | `frontend/src/features/operations/` | Contracts → housekeeping, repairs, menu/orders and parking; build/browser verification |
+| B9 Frontend (finance/staff) | `frontend/src/features/office/` | Contracts → invoices, actual tender entry, receipts, staff, history; build/browser verification |
+| B10 Security and QA | `backend/tests/`, `frontend/e2e/`, independent read-only security review | Integrated source → PostgreSQL/API and browser evidence; review CSRF, scopes, uploads, logs, fix/retest defects |
+| B11 Documentation/product | `docs/requirements/`, `docs/research/`, `docs/system-design/system_design.md`, `docs/diagrams/` except ERD | Brief → traceable SRS, technical flows, honest research instruments; verify vs app before handover |
+
+**Integration review assignments:** B10 browser QA additionally owns `frontend/e2e/stay.spec.ts` for an explicit opt-in *disposable-database* write journey; acceptance is an actual staff browser booking/admission, folio settlement and turnover check against the cloned development DB. Principal owns the isolated launcher, checks and schema fixes. B6 connects recovery mailbox verification only after B10 security's finding. These assignments add no production data.
+
+**Pre-handover reviews:** Security (read only; writable paths **none**) rechecks core identity, the role ceiling, image processing and billing scopes against the original findings and the loopback deployment boundary. QA (read only; writable paths **none**) reconciles the executed database/API, browser and restore evidence with QA-01–19. Each reviewer must distinguish local-demo acceptance from live operational approval, identify any remaining local blocker, and return a disposition to the principal for independent checking.
+
+**B2 Compose rehearsal:** DevOps owns `deploy/rehearse.py` only. Input: the packaged stack, `deploy/snapshot_check.py` and recovery runbook. Output: an opt-in executable synthetic cold-start and isolated DB/media restore check using unique Compose projects and private generated secrets. Principal runs it on the local Docker context and records what actually completes.
+
+**Security rework:** Principal owns reset issuance, activation-version changes and PostgreSQL regression evidence. B6 owns `frontend/src/services/session.tsx` and `frontend/src/services/session.test.tsx` only: ensure a superseded identity read cannot rebind the screen/operator after logout or operator change (delayed-response component tests). Launcher engineer owns `scripts/{run_local,native_db,local_db,demo_config,test_demo_config}.py` only: validate one explicitly loopback configuration for all demo subprocesses and reject stale overrides before migrations, seeding or proxying. Principal independently runs the launcher guard tests, the PostgreSQL regression and the UI build/test gates; security then reviews the integrated fixes.
+
+**Nonfunctional checks:** Browser QA owns only `frontend/e2e/keyboard.spec.ts`: a disposable, opt-in 360 CSS px keyboard walkthrough of booking, reviewed tender and assigned cleaning, with focus and horizontal overflow checks. Use real staff APIs only for disposable fixtures; do not change the regular six journeys. Principal checks source, types and actual Edge result. Principal owns the bounded synthetic workload probe for dashboard and dated availability; report collection method, workload and observed results rather than a hotel-wide performance promise.
+
+## Owner answers — discovery follow-up
+
+1. **Proposal structure:** the owner confirmed the five-page Chuka University guide reviewed in discovery is the intended source.
+2. **Registered unit:** the owner selected **ACSC 483 — Software Project 1** for the proposal cover.
+3. **Proposal status:** the student is starting from the university guide and has no written HMS proposal yet.
+4. **Investigation site:** the student reports selecting a hotel and receiving its permission to conduct the study. Fieldwork status is still open.
+5. **Hotel anonymity:** the student reports that the hotel has not agreed to be named. Use **Hotel A** in the proposal, report and shared project materials.
+
+## Archived discovery assignment board
 
 The principal is the sole writer in this checkpoint. All specialist assignments are advisory, with exclusive writable paths **none**. The artifact is a seven-part report returned to the principal for integration into `docs/discovery_report.md`; the acceptance column defines how to verify it. Scope: staff-operated HMS using Django/DRF, React/TypeScript and PostgreSQL; nine operational modules and seven initial roles.
 
@@ -34,7 +90,7 @@ The named profiles are project-local. D02–D05 began with the available built-i
 
 Decision record: [ADR-001–007](docs/technical/development_decisions.md). Mandated: modular monolith, approved stack, decimal KES and no simulated payments. Proposed: same-origin session auth, half-open room claims, per-stay serialized posting/checkout, separate readiness axes, one property and minimal infrastructure. No architecture change or release has been approved.
 
-## Phase and evidence ledger
+## Archived discovery phase and evidence ledger
 
 | Phase | Deliverable / prerequisite | Status |
 |---|---|---|
@@ -47,7 +103,7 @@ Decision record: [ADR-001–007](docs/technical/development_decisions.md). Manda
 | 7 Academic completion | Chapters 6–7 grounded in actual investigation and implemented design; final DOCX/MD | Pending |
 | 8 Handover | Acceptance, restore drill, deployment, demo and required academic packaging | Pending |
 
-## Current controls
+## Controls at the discovery checkpoint
 
 - **Discovery checks executed:** verified the guide's five pages and SHA-256; queried the project agent registry and eight returned session models; parsed the project JSON, checked all 12 report sections (A–L), all 21 local Markdown links across six documents, and sample ignore rules for private research, backups and environment files. No private input file is a discovery deliverable.
 - **Project tests:** no application, schema or migrations exist. Zero automated application tests run. Discovery checks do not certify security, backups, usability or accounting accuracy.
@@ -55,7 +111,7 @@ Decision record: [ADR-001–007](docs/technical/development_decisions.md). Manda
 - **Documentation:** [discovery report](docs/discovery_report.md), [decision register](docs/technical/development_decisions.md), [README](README.md), [contribution guide](CONTRIBUTING.md) and [team agreement](AGENTS.md) prepared. SRS, academic proposal/report, SDD, detailed ERD, migrations, final DOCX and deployment instructions belong to later gates.
 - **Approvals:** owner to decide project direction before Phase 2; authorize later gates explicitly. No supervisor approval, fieldwork or hotel policies have been verified.
 
-## Test evidence backlog — all application cases **not run**
+## Test evidence backlog as recorded at discovery
 
 | Future evidence | Expected boundary / owner |
 |---|---|
@@ -70,13 +126,13 @@ Decision record: [ADR-001–007](docs/technical/development_decisions.md). Manda
 | Cross-domain evidence | Synthetic guest → reservation → actual stay → room service → payment record → checkout → dirty/inspected room. Reconcile dashboard to source DB, run parking contention and browser tests incl. keyboard/mobile/error/double submit. Test funds are fixtures only. QA/UX. |
 | Release evidence | Production-like deployment/migration checks, HTTPS and secret controls, private media, measured restore/rollback/reconciliation. DevOps/Security/QA. |
 
-## Blockers, decisions and next owners
+## Historical blockers and decision requests at discovery
 
 | Priority | Owner / next action | Gates affected |
 |---|---|---|
 | Now | Owner: supply exact dashboard file/path/URL and reproduction permissions; UX: inspect the identified source. | Phase 1 visual comparison; Phase 4 interface approval |
 | Now | Owner: accept or amend single property, staff UI, named rooms, nights, `Africa/Nairobi`, KES and sessions; authorize Phase 2 only. | Phase 1 exit → SRS |
-| Now / before proposal | Student/supervisor: identify authorized investigation site, approved methodology/proposal, unit, project title, budget ceiling and dates. Supply private cover metadata privately. | Phases 2–3; Chapter 6.2 remains blocked without actual evidence |
+| Now / before proposal | Student/supervisor: confirm fieldwork status at Hotel A, project title, methodology, budget ceiling and dates. Supply private cover metadata privately. | Phases 2–3; Chapter 6.2 remains blocked without actual evidence |
 | During requirements | Reception/manager, facilities and finance: confirm block/expiry/no-show rules, occupancy, inspections, order milestones, rates/taxes/receipt policy and revenue basis. Approve parking and seven-role matrix with object/field access. | SRS, SDD, DB design and tests |
 | Before deployment | Owner/DevOps/Security: choose demo vs live scope, host, data-handling requirements, operating budget, RPO/RTO and tested recovery path. | SDD and release |
 

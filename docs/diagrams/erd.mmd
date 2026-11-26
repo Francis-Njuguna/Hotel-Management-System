@@ -1,0 +1,251 @@
+erDiagram
+    %% Physical PostgreSQL tables. numeric12_2 = numeric(12,2) KES.
+    %% Left entity is parent; edge label is the FK column on the right entity.
+    %% FK cardinalities, not workflow minima: commands require rooms and order lines.
+    %% Unmarked columns are NOT NULL; composite/partial keys are in the dictionary.
+
+    auth_user ||..o| core_staffprofile : user_id
+    auth_user |o..o{ core_auditevent : actor_id
+    auth_user ||..o{ core_notification : recipient_id
+    auth_user ||..o{ auth_user_groups : user_id
+    auth_group ||..o{ auth_user_groups : group_id
+    auth_group ||..o{ auth_group_permissions : group_id
+    auth_permission ||..o{ auth_group_permissions : permission_id
+    auth_user ||..o{ auth_user_user_permissions : user_id
+    auth_permission ||..o{ auth_user_user_permissions : permission_id
+    django_content_type ||..o{ auth_permission : content_type_id
+
+    lodging_guest ||..o{ lodging_reservation : guest_id
+    lodging_room ||..o{ lodging_roomclaim : room_id
+    lodging_reservation |o..o{ lodging_roomclaim : reservation_id
+    housekeeping_maintenancerequest |o..o{ lodging_roomclaim : maintenance_id
+    lodging_reservation ||..o{ lodging_reservationevent : reservation_id
+    auth_user ||..o{ lodging_reservationevent : actor_id
+    lodging_room ||..o{ housekeeping_cleaningtask : room_id
+    auth_user |o..o{ housekeeping_cleaningtask : assignee_id
+    lodging_room ||..o{ housekeeping_maintenancerequest : room_id
+    auth_user |o..o{ housekeeping_maintenancerequest : assignee_id
+
+    lodging_reservation |o..o{ restaurant_order : reservation_id
+    lodging_room |o..o{ restaurant_order : room_id
+    auth_user |o..o{ restaurant_order : assignee_id
+    restaurant_order ||..o{ restaurant_orderitem : order_id
+    restaurant_menuitem ||..o{ restaurant_orderitem : menu_item_id
+    lodging_reservation |o..o| billing_invoice : reservation_id
+    billing_invoice ||..o{ billing_invoiceitem : invoice_id
+    billing_invoice ||..o{ billing_payment : invoice_id
+    auth_user ||..o{ billing_payment : received_by_id
+
+    lodging_guest ||..o{ parking_vehicle : guest_id
+    parking_parkingspace ||..o{ parking_allocation : space_id
+    parking_vehicle ||..o{ parking_allocation : vehicle_id
+
+    core_staffprofile {
+        bigint id PK
+        integer user_id FK, UK "public staff ID"
+        varchar(80) department
+        bigint session_version
+        varchar(254) verified_email
+    }
+    core_auditevent {
+        bigint id PK
+        integer actor_id FK "nullable"
+        varchar(64) verb
+        varchar(100) entity
+        bigint object_id "logical reference, not an FK"
+        varchar(255) summary
+        timestamptz created_at
+    }
+    core_notification {
+        bigint id PK
+        integer recipient_id FK
+        varchar(160) title
+        text message
+        timestamptz created_at
+        timestamptz read_at "nullable"
+    }
+
+    lodging_guest {
+        bigint id PK
+        varchar(160) full_name
+        varchar(254) email "unique when nonblank and normalized"
+        varchar(32) phone
+        varchar(64) reference UK
+        timestamptz created_at
+    }
+    lodging_room {
+        bigint id PK
+        varchar(24) number UK
+        varchar(16) category
+        numeric12_2 nightly_rate
+        integer capacity
+        text description
+        jsonb facilities
+        varchar(255) image
+        varchar(16) cleanliness
+        boolean is_active
+    }
+    lodging_reservation {
+        bigint id PK
+        bigint guest_id FK
+        date arrival
+        date departure
+        varchar(16) status
+        timestamptz checked_in_at "nullable"
+        timestamptz checked_out_at "nullable"
+        timestamptz created_at
+    }
+    lodging_roomclaim {
+        bigint id PK
+        bigint room_id FK
+        bigint reservation_id FK "nullable, XOR maintenance_id"
+        bigint maintenance_id FK "nullable, XOR reservation_id"
+        date start
+        date end
+        boolean blocking "row-local exclusion predicate"
+        numeric12_2 nightly_rate
+    }
+    lodging_reservationevent {
+        bigint id PK
+        bigint reservation_id FK
+        integer actor_id FK
+        varchar(16) status
+        text note
+        timestamptz created_at
+    }
+
+    housekeeping_cleaningtask {
+        bigint id PK
+        bigint room_id FK
+        integer assignee_id FK "nullable"
+        varchar(16) status
+        text notes
+        timestamptz created_at
+    }
+    housekeeping_maintenancerequest {
+        bigint id PK
+        bigint room_id FK
+        integer assignee_id FK "nullable"
+        text description
+        date start
+        date end
+        varchar(16) status
+        boolean blocking
+        timestamptz created_at
+    }
+
+    restaurant_menuitem {
+        bigint id PK
+        varchar(160) name
+        varchar(80) category
+        numeric12_2 price
+        boolean available
+        varchar(255) image
+        text description
+    }
+    restaurant_order {
+        bigint id PK
+        bigint reservation_id FK "nullable"
+        bigint room_id FK "nullable"
+        integer assignee_id FK "nullable"
+        varchar(16) status
+        timestamptz created_at
+    }
+    restaurant_orderitem {
+        bigint id PK
+        bigint order_id FK
+        bigint menu_item_id FK
+        integer quantity
+        numeric12_2 unit_price
+    }
+    billing_invoice {
+        bigint id PK
+        bigint reservation_id FK, UK "nullable, distinct NULLs"
+        timestamptz created_at
+        timestamptz closed_at "nullable"
+    }
+    billing_invoiceitem {
+        bigint id PK
+        bigint invoice_id FK
+        text description
+        integer quantity
+        numeric12_2 unit_price
+        varchar(200) source_key UK
+        timestamptz created_at
+    }
+    billing_payment {
+        bigint id PK
+        bigint invoice_id FK
+        numeric12_2 amount
+        varchar(16) method
+        varchar(128) reference UK
+        integer received_by_id FK
+        timestamptz created_at
+    }
+
+    parking_parkingspace {
+        bigint id PK
+        varchar(24) code UK
+        boolean is_active
+    }
+    parking_vehicle {
+        bigint id PK
+        bigint guest_id FK
+        varchar(32) plate UK
+    }
+    parking_allocation {
+        bigint id PK
+        bigint space_id FK "unique while active"
+        bigint vehicle_id FK "unique while active"
+        timestamptz started_at
+        timestamptz ended_at "nullable"
+    }
+
+    auth_user {
+        integer id PK
+        varchar(150) username UK
+        varchar(128) password
+        varchar(150) first_name
+        varchar(150) last_name
+        varchar(254) email
+        boolean is_staff
+        boolean is_active
+        boolean is_superuser
+        timestamptz last_login "nullable"
+        timestamptz date_joined
+    }
+    auth_group {
+        integer id PK
+        varchar(150) name UK
+    }
+    django_content_type {
+        integer id PK
+        varchar(100) app_label
+        varchar(100) model
+    }
+    auth_permission {
+        integer id PK
+        varchar(255) name
+        integer content_type_id FK
+        varchar(100) codename
+    }
+    auth_user_groups {
+        integer id PK
+        integer user_id FK
+        integer group_id FK
+    }
+    auth_group_permissions {
+        integer id PK
+        integer group_id FK
+        integer permission_id FK
+    }
+    auth_user_user_permissions {
+        integer id PK
+        integer user_id FK
+        integer permission_id FK
+    }
+    django_session {
+        varchar(40) session_key PK
+        text session_data
+        timestamptz expire_date
+    }

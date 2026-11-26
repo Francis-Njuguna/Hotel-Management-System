@@ -1,0 +1,26 @@
+flowchart TB
+    Browser["Staff browser · React / TypeScript"] -->|HTTPS, same origin| Edge["Web entry point"]
+    Edge -->|Client routes and assets| Static["Built Vite client"]
+    Edge -->|API requests| Gate
+    subgraph App["One Django / DRF application · /api/v1/"]
+        Gate["Session, CSRF and action permissions"] --> Core["core · identity, staff, notifications, scoped dashboard and audit"]
+        Gate --> Lodging["lodging · guest, room, reservation and claims"]
+        Gate --> Work["housekeeping · cleaning and maintenance"]
+        Gate --> Food["restaurant · menu and orders"]
+        Gate --> Bill["billing · invoices, charges, tenders and receipts"]
+        Gate --> Park["parking · spaces, vehicles and allocations"]
+        Lodging -->|Turnover at checkout| Work
+        Lodging -->|Reject open orders at checkout| Food
+        Lodging -->|Open or close stay folio| Bill
+        Food -->|Post on serving| Bill
+        Core --> ORM["Django ORM · shared transaction for each command and its audit"]
+        Lodging --> ORM
+        Work --> ORM
+        Food --> ORM
+        Bill --> ORM
+        Park --> ORM
+        Gate --> Image["Authorized room/menu image handler · validate and re-encode uploads"]
+    end
+    ORM --> DB[("PostgreSQL · one operational database")]
+    Image --> Media[("Private media storage")]
+    Core -.->|Staff password recovery| Mail["Configured mail transport"]

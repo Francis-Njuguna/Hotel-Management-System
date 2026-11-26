@@ -9,6 +9,11 @@
 /media/
 /backups/
 *.dump
+.local/
+backend/media/
+backend/staticfiles/
+frontend/playwright/.auth/
+*.log
 
 # Local development and transient output
 .venv/

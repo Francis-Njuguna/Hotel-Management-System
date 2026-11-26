@@ -1,0 +1,16 @@
+flowchart LR
+    Guest["Guest · no application account"] -->|Booking or service request| Desk["Receptionist"]
+    Tender["Cash received or external tender confirmation"] -->|Verified outside the application| Finance["Staff authorized to record tender"]
+    Accountant["Accountant"] --> Finance
+    Manager["Hotel Manager"] --> Finance
+    Admin["Super Administrator"] --> Finance
+    Desk -->|Guests, stays, folio lookup, parking| HMS["Hotel A staff application · one property"]
+    Finance -->|Amount, method and actual reference| HMS
+    Admin -->|Accounts, roles and operational administration| HMS
+    Manager -->|Dispatch, inspection and operational oversight| HMS
+    Cleaner["Housekeeping Staff"] -->|Assigned cleaning work| HMS
+    Repair["Maintenance Staff"] -->|Assigned repairs| HMS
+    Kitchen["Restaurant Staff"] -->|Department menu and orders| HMS
+    HMS -->|Itemized account and receipt for recorded tender| Finance
+    HMS -.->|Staff password-reset link only| Mail["Configured mail delivery channel"]
+    %% No public guest interface and no connection from HMS to a payment processor.

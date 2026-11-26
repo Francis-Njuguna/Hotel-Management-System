@@ -1,0 +1,9 @@
+# Positive list: do not send the checkout, local env, uploads or dumps to BuildKit.
+**
+!backend/requirements.txt
+!backend/manage.py
+!backend/config/**/*.py
+!backend/apps/**/*.py
+!backend/apps/**/templates/**/*.html
+!backend/apps/**/templates/**/*.txt
+!deploy/python.constraints.txt

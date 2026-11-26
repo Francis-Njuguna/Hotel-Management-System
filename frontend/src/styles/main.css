@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@import "./base.css";
+@import "./workspace.css";
+@import "./dashboard.css";
+@import "./auth.css";

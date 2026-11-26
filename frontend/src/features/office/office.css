@@ -1,0 +1,9 @@
+/* Build on the shared panels and controls; keep long references and names inside their records. */
+.office-page .panel { display: grid; align-content: start; gap: 1rem; }
+.office-page .toolbar { justify-content: space-between; }
+.office-page dl:not(.card-grid) { display: grid; gap: .65rem; }
+.office-page dt { color: var(--muted); font-size: .86rem; }
+.office-page dd { margin: .1rem 0 0; overflow-wrap: anywhere; }
+.office-page .card-grid dd { font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+.office-page fieldset { display: grid; min-width: 0; gap: .7rem; }
+.office-page [scope="row"], .office-page td { overflow-wrap: anywhere; }

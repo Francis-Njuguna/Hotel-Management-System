@@ -1,0 +1,48 @@
+.auth-layout { display: grid; grid-template-columns: minmax(17rem, .92fr) minmax(20rem, 1.08fr); min-height: 100dvh; background: #fcfdff; }
+.auth-story { position: relative; isolation: isolate; display: flex; flex-direction: column; overflow: hidden; min-height: 100dvh; padding: clamp(1.5rem, 4vw, 3.8rem); background-image: radial-gradient(ellipse at 10% -10%, #365b91, transparent 65%), linear-gradient(160deg, #19365f, #102541 74%); }
+.auth-story::after { position: absolute; inset: 0; z-index: -1; background-image: radial-gradient(#bad4ff42 .8px, transparent 1px); background-size: 13px 13px; mask-image: linear-gradient(145deg, transparent 30%, #000); content: ""; }
+.auth-story-copy { position: relative; z-index: 1; margin: auto 0 0; padding-top: 3rem; }
+.auth-kicker { display: flex; align-items: center; gap: .6rem; color: #a8c8ff; }
+.auth-story h2 { margin: .55rem 0 .7rem; color: white; font-size: clamp(2.7rem, 5.6vw, 5.3rem); font-weight: 630; letter-spacing: -.07em; }
+.auth-story h2 span { color: #89b7ff; }
+.auth-story-copy p { max-width: 31ch; color: #d8e5f7; font-size: clamp(1rem, 1.5vw, 1.2rem); line-height: 1.65; }
+.auth-story > .hotel-facade { align-self: center; width: min(100%, 28rem); height: auto; margin: clamp(1.8rem, 4.8vh, 4rem) 0 auto; color: #8caeda; opacity: .84; }
+.auth-property { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .45rem 1rem; padding-top: .9rem; border-top: 1px solid #b8d4ff4a; color: #ceddf1; font-size: .76rem; }
+.auth-property span { display: inline-flex; align-items: center; gap: .4rem; }
+.auth-property strong { font-weight: 600; }
+.auth-form-side { display: grid; align-content: center; justify-items: center; padding: 2rem clamp(1.3rem, 5vw, 4rem); }
+.auth-form-content { width: min(100%, 24.5rem); }
+.auth-icon { display: grid; place-items: center; width: 3.2rem; height: 3.2rem; margin-bottom: 1.35rem; border: 1px solid #cbdcf4; border-radius: .88rem; background: #eaf2ff; color: #315fa9; }
+.auth-form-content h1 { margin: .26rem 0 .42rem; font-size: clamp(1.8rem, 3vw, 2.55rem); }
+.auth-intro { margin: 0 0 1.55rem; color: var(--muted); font-size: .96rem; line-height: 1.6; }
+.auth-form { display: grid; gap: 1rem; }
+.auth-form .field { gap: .4rem; }
+.auth-form input { min-height: 2.85rem; box-shadow: 0 1px 2px #152d5508; }
+.auth-form-content > .notice { margin-bottom: .85rem; }
+.secret-input { position: relative; }
+.secret-input input { padding-right: 3rem; }
+.secret-input button { position: absolute; inset: 1px 1px 1px auto; display: grid; place-items: center; width: 2.75rem; border-radius: .42rem; background: transparent; color: #4c6587; }
+.secret-input button:hover { background: #edf3fc; }
+.auth-recovery, .back-to-login { display: inline-flex; align-items: center; gap: .4rem; min-height: 2rem; color: var(--brand); font-size: .85rem; font-weight: 630; text-decoration: none; }
+.auth-recovery { justify-self: end; margin-block: -.55rem -.3rem; }
+.back-to-login { margin-top: 1.1rem; }
+.auth-recovery:hover, .back-to-login:hover { text-decoration: underline; }
+.auth-submit { width: 100%; min-height: 2.85rem; font-size: .94rem; }
+.auth-footnote { display: flex; align-items: center; gap: .5rem; margin-top: 1.7rem; padding-top: .95rem; border-top: 1px solid var(--line); color: #58708c; font-size: .77rem; }
+.auth-result { display: grid; justify-items: start; gap: .35rem; padding: 1.05rem; border: 1px solid #b7dbcd; border-radius: .75rem; color: #1e5f49; background: #eff9f4; }
+.auth-result p { font-size: .9rem; }
+.verification-panel { max-width: 40rem; }
+.verification-panel > p:not(.error) { color: var(--muted); font-size: .94rem; }
+.verification-heading, .verification-identity { display: flex; gap: .7rem; align-items: center; }
+.verification-identity { width: fit-content; max-width: 100%; padding: .6rem .8rem; border: 1px solid #d7e2ee; border-radius: .55rem; background: #f2f6fc; color: #395777; }
+.verification-identity small, .verification-identity strong { display: block; overflow-wrap: anywhere; }
+.verification-identity small { color: var(--muted); font-size: .73rem; }
+.verification-request { display: grid; justify-items: start; gap: .55rem; }
+@media (max-width: 48rem) {
+  .auth-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; }
+  .auth-story { min-height: 0; padding: 1.1rem max(1.25rem, calc((100% - 25rem)/2)); }
+  .auth-story-copy, .auth-property, .auth-story > .hotel-facade { display: none; }
+  .auth-form-side { align-content: start; padding-block: clamp(2rem, 7vh, 4rem); }
+  .auth-icon { width: 2.75rem; height: 2.75rem; margin-bottom: 1rem; }
+  .auth-recovery, .back-to-login { min-height: 2.75rem; }
+}

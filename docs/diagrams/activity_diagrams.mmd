@@ -1,0 +1,27 @@
+flowchart TB
+    %% Independent activities. Each rejection leaves the prior committed state intact.
+    subgraph Cleaning["FR-05 · cleaning a departed room"]
+        Dirty["Dirty room and pending turnover"] --> Eligible{"Picked an active, eligible assignee?"}
+        Eligible -->|No| Pending["Reject assignment; task stays pending"]
+        Eligible -->|Yes| Assigned["Assigned worker starts task"]
+        Assigned --> Working["In progress"] --> Complete["Completed · not yet inspected"]
+        Complete --> Inspect{"Manager inspection and room checks pass?"}
+        Inspect -->|No| Wait["No release for admission"]
+        Inspect -->|Yes| Ready["Inspected · check occupancy and repairs again at admission"]
+    end
+    subgraph Repair["FR-04/05 · opening and resolving a repair"]
+        Request["Manager records room, interval and description"] --> Blocks{"Blocking work?"}
+        Blocks -->|Yes| Fits{"Can reserve that room interval without displacement?"}
+        Fits -->|No| Conflict["Reject request and claim together"]
+        Fits -->|Yes| Blocked["Open request plus blocking room claim"]
+        Blocks -->|No| Unblocked["Open request without blocking inventory"]
+        Blocked --> Resolve["Assigned worker or manager resolves request"]
+        Unblocked --> Resolve
+        Resolve --> Released["Resolved · release only this repair's block, if any"]
+    end
+    subgraph Parking["FR-08 · assigning a parking space"]
+        Vehicle["Find guest-linked vehicle and active space"] --> Allocate{"Can both be allocated exclusively now?"}
+        Allocate -->|No| Taken["Conflict; no new allocation"]
+        Allocate -->|Yes| Parked["Record one active allocation"]
+        Parked --> Leave["End allocation; preserve history and make space reusable"]
+    end

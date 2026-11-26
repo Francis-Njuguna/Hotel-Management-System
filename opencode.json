@@ -31,19 +31,19 @@
       "mode": "subagent",
       "description": "Owns PostgreSQL data design, constraints, ERD and migration review.",
       "system": "Act as Database Engineer. Specify keys, data types, cardinalities, normalization, integrity under concurrency and query indexes. Obtain ERD and data dictionary review before any model or migration. Report per AGENTS.md.",
-      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }, { "action": "execute", "resource": "*", "effect": "deny" }]
+      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "edit", "resource": "docs/system-design/database_design.md", "effect": "allow" }, { "action": "edit", "resource": "docs/diagrams/erd.mmd", "effect": "allow" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }]
     },
     "hms-backend": {
       "mode": "subagent",
       "description": "Owns Django/DRF domain services, serializers, authorization, APIs and tests.",
       "system": "Act as Django Backend Engineer. Preserve transaction boundaries, server-enforced permissions, validation and consistent errors. Follow only approved contracts and scoped assignments. Report per AGENTS.md.",
-      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }, { "action": "execute", "resource": "*", "effect": "deny" }]
+      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "edit", "resource": "backend/apps/*", "effect": "allow" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }]
     },
     "hms-frontend": {
       "mode": "subagent",
       "description": "Owns the React/TypeScript features, forms, API integration and component tests.",
       "system": "Act as Frontend Engineer. Use the reviewed UI direction and versioned API contracts. Include loading, empty, failure, retry and accessible success states. Do not substitute fixtures for the production API. Report per AGENTS.md.",
-      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }, { "action": "execute", "resource": "*", "effect": "deny" }]
+      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "edit", "resource": "frontend/src/*", "effect": "allow" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }]
     },
     "hms-security": {
       "mode": "subagent",
@@ -55,19 +55,19 @@
       "mode": "subagent",
       "description": "Independently verifies policies, workflows, regressions and release evidence.",
       "system": "Act as QA Engineer. Tie every criterion to a fixture, action and observable outcome. Distinguish desk checks from executed PostgreSQL, API, component and browser tests. Report defects and unmet acceptance criteria per AGENTS.md.",
-      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }, { "action": "execute", "resource": "*", "effect": "deny" }]
+      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "edit", "resource": "backend/tests/*", "effect": "allow" }, { "action": "edit", "resource": "frontend/e2e/*", "effect": "allow" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }]
     },
     "hms-devops": {
       "mode": "subagent",
       "description": "Owns environment, deployment, secrets, logging and tested recovery plans.",
       "system": "Act as DevOps Engineer. Design the simplest operable same-origin deployment, least-privilege database access, media handling, monitoring, backups, restore and rollback. Flag costs and hosting assumptions. Report per AGENTS.md.",
-      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }, { "action": "execute", "resource": "*", "effect": "deny" }]
+      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "edit", "resource": "deploy/*", "effect": "allow" }, { "action": "edit", "resource": "compose.yaml", "effect": "allow" }, { "action": "edit", "resource": "docs/technical/deployment_guide.md", "effect": "allow" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }]
     },
     "hms-docs": {
       "mode": "subagent",
       "description": "Owns academic source compliance, research instruments, DOCX and technical documentation.",
       "system": "Act as Technical Documentation Engineer. Keep the university report distinct from engineering specifications. Cite real sources, label estimates, preserve the original guide's ordering and never manufacture field evidence. Report per AGENTS.md.",
-      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }, { "action": "execute", "resource": "*", "effect": "deny" }]
+      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "edit", "resource": "docs/requirements/*", "effect": "allow" }, { "action": "edit", "resource": "docs/research/*", "effect": "allow" }, { "action": "edit", "resource": "docs/system-design/system_design.md", "effect": "allow" }, { "action": "edit", "resource": "docs/diagrams/*", "effect": "allow" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }]
     }
   }
 }

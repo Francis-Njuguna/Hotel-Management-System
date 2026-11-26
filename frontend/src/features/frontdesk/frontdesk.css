@@ -1,0 +1,62 @@
+/* Feature-scoped layout; controls, panels and type inherit the shell's semantic styles. */
+.fd-page, .fd-dialog-inner, .fd-stack, .fd-page .panel { display: grid; gap: 1rem; min-width: 0; }
+.fd-page { align-content: start; }
+.fd-page .panel { align-content: start; }
+.fd-header, .fd-pager, .fd-dialog-header, .fd-line { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .7rem 1rem; }
+.fd-page h1, .fd-page h2, .fd-page h3, .fd-dialog h2, .fd-dialog h3, .fd-dialog h4 { margin: 0; }
+.fd-page p, .fd-dialog p { margin-block: 0; }
+.fd-header .muted { margin-top: .35rem; }
+.fd-page .toolbar, .fd-dialog .toolbar { display: flex; align-items: end; flex-wrap: wrap; gap: .75rem; }
+.fd-page .field, .fd-dialog .field { min-width: 0; }
+.fd-page .toolbar .field, .fd-dialog .toolbar .field { flex: 1 1 11rem; }
+.fd-page .fd-search { flex-basis: 18rem; }
+.fd-page .actions, .fd-dialog .actions { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; }
+.fd-page input:not([type='checkbox']), .fd-page select, .fd-dialog input:not([type='checkbox']), .fd-dialog select, .fd-dialog textarea { min-width: 0; max-width: 100%; box-sizing: border-box; }
+.fd-dialog textarea { resize: vertical; }
+.fd-form, .fd-fields { display: grid; gap: 1rem; }
+.fd-fields { border: 0; padding: 0; margin: 0; min-width: 0; }
+.fd-wide-field { grid-column: 1 / -1; }
+.fd-page .fd-check, .fd-dialog .fd-check { display: flex; align-items: flex-start; gap: .55rem; }
+.fd-page .fd-check input, .fd-dialog .fd-check input { width: auto; height: auto; margin-top: .25em; flex: none; }
+.fd-summary, .fd-group { border: 1px solid #cbd5e1; border-radius: .7rem; padding: .85rem 1rem; min-width: 0; }
+.fd-group { display: grid; gap: .75rem; margin: 0; }
+.fd-group legend { padding: 0 .3rem; font-weight: 650; }
+.fd-condition-filters summary { color: var(--brand, #2456b7); font-size: .9rem; font-weight: 600; }
+.fd-condition-filters[open] summary { margin-bottom: .65rem; }
+.fd-pager { padding-top: .5rem; border-top: 1px solid #dbe1e9; font-size: .9rem; }
+.fd-table { width: 100%; border-collapse: collapse; text-align: left; }
+.fd-table th, .fd-table td { text-align: left; vertical-align: top; padding: .75rem .55rem; border-bottom: 1px solid #dbe1e9; }
+.fd-sub { display: block; margin-top: .16rem; font-size: .88rem; }
+.fd-mobile-label { display: none; }
+.fd-message, .fd-page td, .fd-dialog, .fd-room-card { overflow-wrap: anywhere; }
+.fd-page .fd-status, .fd-dialog .fd-status { white-space: nowrap; }
+.fd-page .fd-status-checked_in, .fd-dialog .fd-status-checked_in { background: #d9f1e8; color: #134936; }
+.fd-page .fd-status-pending, .fd-dialog .fd-status-pending { background: #fff0cf; color: #684800; }
+.fd-dialog { position: fixed; inset: 0; margin: auto; width: min(38rem, calc(100% - 1.5rem)); max-height: calc(100dvh - 2rem); padding: 0; border: 1px solid #cbd5e1; border-radius: .9rem; box-shadow: 0 15px 55px #14293b38; background: white; color: #172b40; overflow: auto; }
+.fd-dialog:not([open]) { display: none; }
+.fd-dialog-wide { width: min(52rem, calc(100% - 1.5rem)); }
+.fd-dialog::backdrop { background: #15283983; }
+.fd-dialog-inner { padding: clamp(.9rem, 2.5vw, 1.5rem); }
+.fd-dialog-header h2 { font-size: 1.3rem; }
+.fd-history, .fd-options, .fd-picked { display: grid; gap: .45rem; margin: 0; padding: 0; list-style: none; }
+.fd-history li, .fd-options li, .fd-picked li { padding: .6rem .15rem; border-bottom: 1px solid #dde3e9; }
+.fd-history li > p + p { margin-top: .2rem; }
+.fd-page .fd-room-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16.5rem), 1fr)); gap: 1rem; }
+.fd-room-card { display: flex; flex-direction: column; border: 1px solid #cfd8e2; border-radius: .8rem; overflow: hidden; background: white; }
+.fd-room-card img, .fd-no-photo { width: 100%; aspect-ratio: 16 / 9; max-height: 13rem; object-fit: cover; background: #eaf0f5; }
+.fd-no-photo { display: grid; place-items: center; color: #475c70; font-size: .9rem; }
+.fd-room-body { display: grid; align-content: start; gap: .65rem; padding: .85rem 1rem 1rem; }
+.fd-facts { display: flex; flex-wrap: wrap; gap: .35rem; padding: 0; margin: 0; list-style: none; }
+.fd-facts li { padding: .18rem .5rem; border-radius: .35rem; background: #eef3f7; color: #243f55; font-size: .85rem; }
+.fd-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+@media (max-width: 44rem) {
+  .fd-page .form-grid, .fd-dialog .form-grid { grid-template-columns: minmax(0,1fr); }
+  .fd-table, .fd-table tbody, .fd-table tr, .fd-table td { display: block; }
+  .fd-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .fd-table tr { padding-block: .6rem; border-bottom: 1px solid #cfd8e2; }
+  .fd-table td { padding: .25rem 0; border: 0; white-space: normal; }
+  .fd-page .fd-table { min-width: 0; }
+  .fd-mobile-label { display: inline-block; min-width: 5.5rem; margin-right: .4rem; color: #455b70; font-size: .85rem; }
+  .fd-table .actions { margin-top: .25rem; }
+  .fd-dialog .fd-group { padding-inline: .65rem; }
+}
