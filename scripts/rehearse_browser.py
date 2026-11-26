@@ -52,7 +52,9 @@ def stop(proc):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--keyboard-only',action='store_true',help='Run the narrow keyboard walkthrough on its own fresh fixture.')
+    scope=parser.add_mutually_exclusive_group()
+    scope.add_argument('--keyboard-only',action='store_true',help='Run the narrow keyboard walkthrough on its own fresh fixture.')
+    scope.add_argument('--admin-only',action='store_true',help='Check catalog photo uploads and staff role assignment on a fresh fixture.')
     options=parser.parse_args()
     cfg=existing_demo()
     for port in (8019,5189):
@@ -105,6 +107,8 @@ Room.objects.get(number='D101').image.save('test-catalog.jpg',ContentFile(buf.ge
                 selected=[]
                 if options.keyboard_only:
                     runner['HMS_E2E_KEYBOARD']='1'; selected=['keyboard.spec.ts']
+                elif options.admin_only:
+                    runner['HMS_E2E_ADMIN']='1'; selected=['admin.spec.ts']
                 subprocess.run([node,'node_modules/@playwright/test/cli.js','test','--config=e2e/playwright.config.ts',*selected],cwd=front,env=runner,check=True)
             rehearse(env, media)
         finally:

@@ -1,6 +1,6 @@
 # B10 · Staff browser acceptance
 
-The five default journeys create no business records. Login, session activity, throttling and logout are real. A sixth, opt-in journey writes a booking and a synthetic payment in a **separate, disposable database**. A separately selectable keyboard walkthrough uses its own fresh database. Each test gets a new Chromium context; there is no shared or saved authentication state.
+The five default journeys create no business records. Login, session activity, throttling and logout are real. A sixth, opt-in journey writes a booking and a synthetic payment in a **separate, disposable database**. The keyboard and administrator walkthroughs can each be selected on their own fresh database. Each test gets a new Chromium context; there is no shared or saved authentication state.
 
 ## Operator setup
 
@@ -27,6 +27,8 @@ The five default journeys create no business records. Login, session activity, t
 **Write journey and restore:** From the repository root, after local setup, run `.\.venv\Scripts\python.exe scripts/rehearse_browser.py` (POSIX: `.venv/bin/python scripts/rehearse_browser.py`). Set `PLAYWRIGHT_CHANNEL=msedge` for installed Edge on Windows. This runner creates a new database, media directory, staff login and front/back servers on ports 5189/8019. It alone sets `HMS_E2E_DISPOSABLE=1`; do not set that flag for an existing workspace. Following browser success it stops both servers, restores the database archive and media in isolation, compares the results and removes the scratch resources. Local `pg_dump` and `pg_restore` matching the server are required on `PATH` or in `PG_BIN`.
 
 **Narrow keyboard walkthrough:** run the same `scripts/rehearse_browser.py` command with `--keyboard-only`. The runner sets both opt-ins and selects only `keyboard.spec.ts`. From a clean initial fixture it uses 360 CSS px and real Tab/Enter/Space input to find and confirm a prepared booking, handle an unpaid-checkout refusal, review a counted synthetic cash voucher and finish an assigned cleaning task. It checks focus indication and overflow on those surfaces; it is not a full accessibility audit.
+
+**Administrator walkthroughs:** use `--admin-only` to select the two tests in `admin.spec.ts` on a separate fresh fixture. The first attaches a generated PNG in each catalog’s create form and checks that its saved image displays after a reload. The second creates a receptionist through the staff form, signs in with that account, reassigns it to Restaurant Staff and checks the resulting session and permissions.
 
 ## Fixture → action → required observation
 
