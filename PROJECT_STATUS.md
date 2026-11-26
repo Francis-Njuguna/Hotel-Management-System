@@ -2,6 +2,14 @@
 
 **Checkpoint:** 2026-11-26 · **Current direction:** owner requested the working system after reviewing discovery. Build the anonymized Hotel A application using the specified stack. Academic submissions and still-unknown field findings are deferred. The owner reports no existing system; this is not evidence about particular manual procedures. The original discovery checkpoint below is historical.
 
+## Resume here — staff dashboard checkpoint
+
+Work paused at the owner’s request. Git tag: `checkpoint/staff-admin-workflows`.
+
+- **Last verified changes:** `12a1afe` records two passing Edge workflows: creating rooms and menu items with photos that survive a reload, and creating a staff login, assigning its role and changing its access. See the [staff walkthrough](docs/technical/implementation_guide.md#where-to-find-booking-photos-and-staff-roles).
+- **Reopen the demo:** run `Start Hotel A.cmd`, then open `http://127.0.0.1:5187/`. The [launch instructions](README.md#run-the-local-demo) explain where to find the local administrator login.
+- **Next decision:** staff currently reserve rooms on behalf of guests. A guest self-booking page was discussed but not requested for implementation. Resume by confirming whether the owner wants one.
+
 ## Software delivery and verification — 2026-11-26
 
 All nine staff areas are implemented. Start the [local demo](README.md#run-the-local-demo); the optional starter catalog has six rooms, one synthetic guest, menu items and parking spaces. Setup creates no booking or tender. The following observations are from the integrated application with synthetic fixtures.
