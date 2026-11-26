@@ -1,0 +1,7 @@
+# Contributing
+
+1. Check the gate and assigned owner in [PROJECT_STATUS.md](PROJECT_STATUS.md). At discovery the owner is reviewing direction; the next deliverable after approval is the SRS, not application code.
+2. Submit a change with its requirement, affected modules/files, dependency, acceptance case and evidence. Request a decision record for changes to architecture, inventory semantics, financial policy or access control. Do not change an approved stack or hotel policy by implication.
+3. For later implementation, use a focused branch/PR for each agreed increment. Review the data dictionary and API contract before assigning model and UI work. A migration and its model must have coordinated ownership. Keep fixtures separate from runtime data; include negative and concurrent cases where applicable.
+4. A passing screen demonstration alone is insufficient. Provide the relevant PostgreSQL, API, component or browser result; QA verifies independently. Security and recovery claims require separate evidence. Record failures and retests in the tracker.
+5. Publish only material authorized for this **public** repository. Use anonymous evidence IDs in academic text. Keep original consent forms, contact details, student identifiers, raw interview records, guest data, credentials and unlicensed images or logo artwork in approved private storage. Share a redacted public report and a private submission copy if required.

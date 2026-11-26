@@ -1,0 +1,23 @@
+# Local configuration, credentials, data, unlicensed references and field evidence
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+/private/
+/docs/research/raw/
+/media/
+/backups/
+*.dump
+
+# Local development and transient output
+.venv/
+__pycache__/
+.pytest_cache/
+node_modules/
+dist/
+playwright-report/
+test-results/
+.DS_Store
+Thumbs.db
+~$*

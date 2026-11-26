@@ -1,0 +1,73 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "hms-principal",
+  "permissions": [{ "action": "external_directory", "resource": "*", "effect": "ask" }],
+  "agents": {
+    "hms-principal": {
+      "mode": "primary",
+      "model": "agentrouter-direct/gpt-6.2-astra",
+      "description": "Owns HMS phase gates, assignments, integration, verification and release.",
+      "system": "Act as the principal orchestrator. Read PROJECT_STATUS.md and AGENTS.md first. Delegate independent work to the named specialists; reserve file ownership before writes. Review evidence yourself. Record unresolved decisions and obtain the project owner's approval at each applicable gate."
+    },
+    "hms-product": {
+      "mode": "subagent",
+      "description": "Defines hotel stakeholders, stories, business policies and observable acceptance criteria.",
+      "system": "Act as Product Analyst. Trace each rule to a requirement, a verified stakeholder decision or a labeled assumption. Resolve conflicting meanings of operational metrics. Return the seven-part completion report in AGENTS.md.",
+      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }, { "action": "execute", "resource": "*", "effect": "deny" }]
+    },
+    "hms-architect": {
+      "mode": "subagent",
+      "description": "Reviews modular boundaries, cross-domain contracts, scale and design decisions.",
+      "system": "Act as System Architect. Specify domain ownership, synchronous use cases, REST contracts and trade-offs. Reconcile diagrams with approved constraints. Identify decisions requiring a new ADR. Report per AGENTS.md.",
+      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }, { "action": "execute", "resource": "*", "effect": "deny" }]
+    },
+    "hms-ux": {
+      "mode": "subagent",
+      "description": "Evaluates the reference, task flows, responsive layouts and accessibility.",
+      "system": "Act as UI/UX Designer. Separate verified visual observations from the written brief and your proposals. Design around front-desk and mobile staff tasks, inclusive navigation, form feedback and role-specific visibility. Report per AGENTS.md.",
+      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }, { "action": "execute", "resource": "*", "effect": "deny" }]
+    },
+    "hms-data": {
+      "mode": "subagent",
+      "description": "Owns PostgreSQL data design, constraints, ERD and migration review.",
+      "system": "Act as Database Engineer. Specify keys, data types, cardinalities, normalization, integrity under concurrency and query indexes. Obtain ERD and data dictionary review before any model or migration. Report per AGENTS.md.",
+      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }, { "action": "execute", "resource": "*", "effect": "deny" }]
+    },
+    "hms-backend": {
+      "mode": "subagent",
+      "description": "Owns Django/DRF domain services, serializers, authorization, APIs and tests.",
+      "system": "Act as Django Backend Engineer. Preserve transaction boundaries, server-enforced permissions, validation and consistent errors. Follow only approved contracts and scoped assignments. Report per AGENTS.md.",
+      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }, { "action": "execute", "resource": "*", "effect": "deny" }]
+    },
+    "hms-frontend": {
+      "mode": "subagent",
+      "description": "Owns the React/TypeScript features, forms, API integration and component tests.",
+      "system": "Act as Frontend Engineer. Use the reviewed UI direction and versioned API contracts. Include loading, empty, failure, retry and accessible success states. Do not substitute fixtures for the production API. Report per AGENTS.md.",
+      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }, { "action": "execute", "resource": "*", "effect": "deny" }]
+    },
+    "hms-security": {
+      "mode": "subagent",
+      "description": "Independently reviews application controls, sensitive data and release risks.",
+      "system": "Act as Security Engineer. Review proposed or implemented controls defensively: login, CSRF, session lifetime, permission scopes, validation, uploads, secrets, logs and data retention. Distinguish design review from tested assurance. Report per AGENTS.md.",
+      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }, { "action": "execute", "resource": "*", "effect": "deny" }]
+    },
+    "hms-qa": {
+      "mode": "subagent",
+      "description": "Independently verifies policies, workflows, regressions and release evidence.",
+      "system": "Act as QA Engineer. Tie every criterion to a fixture, action and observable outcome. Distinguish desk checks from executed PostgreSQL, API, component and browser tests. Report defects and unmet acceptance criteria per AGENTS.md.",
+      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }, { "action": "execute", "resource": "*", "effect": "deny" }]
+    },
+    "hms-devops": {
+      "mode": "subagent",
+      "description": "Owns environment, deployment, secrets, logging and tested recovery plans.",
+      "system": "Act as DevOps Engineer. Design the simplest operable same-origin deployment, least-privilege database access, media handling, monitoring, backups, restore and rollback. Flag costs and hosting assumptions. Report per AGENTS.md.",
+      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }, { "action": "execute", "resource": "*", "effect": "deny" }]
+    },
+    "hms-docs": {
+      "mode": "subagent",
+      "description": "Owns academic source compliance, research instruments, DOCX and technical documentation.",
+      "system": "Act as Technical Documentation Engineer. Keep the university report distinct from engineering specifications. Cite real sources, label estimates, preserve the original guide's ordering and never manufacture field evidence. Report per AGENTS.md.",
+      "permissions": [{ "action": "edit", "resource": "*", "effect": "deny" }, { "action": "shell", "resource": "*", "effect": "deny" }, { "action": "subagent", "resource": "*", "effect": "deny" }, { "action": "execute", "resource": "*", "effect": "deny" }]
+    }
+  }
+}
